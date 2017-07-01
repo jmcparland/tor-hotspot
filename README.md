@@ -24,3 +24,9 @@ APPROACH / STRATEGY:
 (5) Add an SSID identifying the wireless access to the VLAN-capable wireless system which directs all wireless traffic on that SSID to the new VLAN.
 (6) Configure bandwidth rate limiting one or both of the wireless access point and Raspberry Pi.
 (7) Configure firewall rules to isolate the new VLAN from other network segments, and rules to ensure that ONLY the Pi can communicate through the frewall-router from inside the VLAN -- no other wireless client traffic should exit.
+
+EQUIPMENT LIST:
+
+* Ubiquiti EdgeRouter-X (~$50)
+* Ubiquiti Unifi AP AC Lite (~$80)
+* Raspbery Pi (~$50)
