@@ -76,6 +76,8 @@ The gist of the rules below:
 * Rule 70: Explicitly disables outbound UDP traffic, to include network-bound DNS lookups.
 * Rule 80: Explicitly disables outbound ICMP traffic (e.g. "ping") from clients, which would bypass the tor network.
 
+All traffic not explicitly handled by the above rules is accepted.
+
 Remember, all guest wireless clients to the VLAN are instructed to use stormbeam as a gateway.
 
 ```
@@ -166,6 +168,21 @@ ubnt@ubnt#
 
 ## Outbound
 
+Disclaimer: See the "Inbound" Rules disclaimer above.
+
+These rules handle traffic headed into the VLAN / toward stormbeam and the wireless clients. Gists of the following rules:
+
+* Rule 10: Already established connections may continue.
+* Rule 20: Invalid packets are dropped.
+* Rule 30: _This is a non-essential rule._ This system has Nagios monitoring the stormbeam server to make sure it's accessible and alive. The Nagios service does not reside inside the Tor VLAN, so this rule grants access.
+* Rule 40: _This is a non-essential rule_ that permits one particular administrative computer with a defined MAC address permission to access the Tor VLAN from outside the VLAN for systems checks, maintenance, etc.
+* Rule 50: _This is a non-essential rule_ that allows an entirely different office subnet into the Tor VLAN to use the Tor services via proxy.
+* Rule 51: _This is a non-essential rule_ that allows systems on a particular administrative subnet access to the Tor VLAN.
+
+Note that:
+1. Traffic not explicitly allowed is dropped, except...
+2. The port-forwarding rules previously described supercede defined firewall rules. That is, port-forwarding on Ubiquiti systems separately "punches holes" through the firewall with implicit rules.
+
 ```
 ubnt@ubnt# show firewall name NGH_OUT                                                                                                                  
  default-action drop                                                                                                                                   
@@ -200,16 +217,16 @@ ubnt@ubnt# show firewall name NGH_OUT
      log disable                                                                                                                                       
      protocol icmp                                                                                                                                     
      source {                                                                                                                                          
-         address 192.168.1.12                                                                                                                          
+         address 192.168.xx.yy                                                                                                                          
      }                                                                                                                                                 
  }                                                                                                                                                     
  rule 40 {                                                                                                                                             
      action accept                                                                                                                                     
-     description "allow blastosphere wless"                                                                                                            
+     description "allow admin computer"                                                                                                            
      log disable                                                                                                                                       
      protocol all                                                                                                                                      
      source {                                                                                                                                          
-         mac-address a8:a7:95:5f:88:c5                                                                                                                 
+         mac-address 11:22:33:44:55:66                                                                                                                 
      }                                                                                                                                                 
  }                                                                                                                                                     
  rule 50 {                                                                                                                                             
@@ -218,7 +235,7 @@ ubnt@ubnt# show firewall name NGH_OUT
      log disable                                                                                                                                       
      protocol all                                                                                                                                      
      source {                                                                                                                                          
-         address 192.168.6.0/24                                                                                                                        
+         address 192.168.zz.xx/24                                                                                                                        
      }                                                                                                                                                 
  }                                                                                                                                                     
  rule 51 {                                                                                                                                             
@@ -227,7 +244,7 @@ ubnt@ubnt# show firewall name NGH_OUT
      log disable                                                                                                                                       
      protocol all                                                                                                                                      
      source {                                                                                                                                          
-         address 192.168.4.0/24                                                                                                                        
+         address 192.168.mm.nn/24                                                                                                                        
      }                                                                                                                                                 
  }                                                                                                                                                     
 [edit]
