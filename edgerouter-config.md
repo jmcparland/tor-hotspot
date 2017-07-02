@@ -1,4 +1,4 @@
-This document generally defines and walks through relevant configuration details for the Ubiquiti EdgeRouter-X. Separate documents will be provided for configuration of the wireless access and the Raspberry Pi Tor server ("stormbeam," in our example). Note that this document details a particular implementation and may need to be adjusted significantly to fit into your network. Particular IP & MAC addresses may be obfuscated below.
+This document generally defines and walks through relevant configuration details for the Ubiquiti EdgeRouter-X. Separate documents will be provided for configuration of the wireless access and the Raspberry Pi Tor server ("stormbeam," in our example). Note that this document details a particular implementation and may need to be adjusted significantly to fit into your network. Particular IP & MAC addresses may be obfuscated below. This document does _not_ provide instruction in configuring the device, only the values for this particular implementation. As always, make changes to your networks with caution.
 
 Covered here:
 * VLAN Definition
