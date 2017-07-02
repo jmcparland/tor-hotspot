@@ -1,7 +1,7 @@
 # tor-hotspot
 Add a Tor hotspot to an established network using Ubiquiti gear (EdgeRouter-X &amp; Unifi AP AC Lite) by adding a Raspberry Pi. Generalizes to VLAN-capable network gear.
 
-This is a high-level description of an operational network environment providing an add-on Tor hotspot service to the environment; it is not a howto. The descriptioni assumes some fluency with networking fundamentals (routing, VLANs, DHCP, firewalling, etc.), fluency with linux use and configuration (a Raspberry Pi running raspian hosts the Tor service), and assumes network equipment capable of creating a separate wireless network for the service (I use inexpensive Ubiquiti gear, which I will describe). Lacking any of the above, this is a good, fairly inexpensive project to put one on the path to acquiring those items while providing an unusual service for your and your neighbors.
+This is a high-level description of an operational network environment providing an add-on Tor hotspot service to the environment; it is not a HOWTO. The description assumes some fluency with networking fundamentals (routing, VLANs, DHCP, firewalling, etc.), fluency with linux use and configuration (a Raspberry Pi running raspian hosts the Tor service), and assumes network equipment capable of creating a separate wireless network for the service (I use inexpensive Ubiquiti gear, which I will describe). Lacking any of the above, this is a good, fairly inexpensive project to put one on the path to acquiring those items while providing an unusual service for your and your neighbors.
 
 # About Tor:
 
