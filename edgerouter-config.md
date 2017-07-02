@@ -64,6 +64,20 @@ As a reminder, "inbound" rules apply to traffic arriving at the firewall-router 
 
 ## Inbound
 
+Disclaimer: These rules are functional, but not guaranteed to be "best practice." Addtionally, they do contain specific addressses on this network's LAN which may be changed or ommitted for your individual use cases.
+
+The gist of the rules below:
+
+* Rules 10 & 20: On-going (previously established) connections can continue, but discard invalid packets.
+* Rule 30: Anything from server stormbeam is allowed out to the network or to the internet.
+* Rule 40: Any guest on the VLAN can talk to stormbeam. (This may not actually be necessary since all devices in the VLAN are in the same broadcast domain.)
+* Rule 50: In this implementation, wireless clients go through a captive portal and are redirected to an "About Tor" webpage on the VLAN. This rule allows the wireless client to speak to the wireless controller (outside of the VLAN) as part of that authentication process.
+* Rule 60: Server stormbeam was already allowed to talk to anyone. This rule ensures that no other client on the VLAN can talk to any other device on the larger network outside of the VLAN (except for the exception in Rule 50). [Wireless policy rules will also prevent wireless clients on the VLAN from talking to one another.]
+* Rule 70: Explicitly disables outbound UDP traffic, to include network-bound DNS lookups.
+* Rule 80: Explicitly disables outbound ICMP traffic (e.g. "ping") from clients, which would bypass the tor network.
+
+Remember, all guest wireless clients to the VLAN are instructed to use stormbeam as a gateway.
+
 ```
 ubnt@ubnt# show firewall name NGH_IN                                                                                                                   
  default-action accept                                                                                                                                 
@@ -115,7 +129,7 @@ ubnt@ubnt# show firewall name NGH_IN
      action accept
      description "allow guest wireless authentication"                                                                                                 
      destination {                                                                                                                                     
-         address 192.168.4.7                                                                                                                           
+         address 192.168.xx.yy                                                                                                                          
          port 8880                                                                                                                                     
      }                                                                                                                                                 
      log disable                                                                                                                                       
