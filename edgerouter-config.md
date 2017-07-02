@@ -1,3 +1,11 @@
+This document generally defines and walks through relevant configuration details for the Ubiquiti EdgeRouter-X. Separate documents will be provided for configuration of the wireless access and the Raspberry Pi Tor server ("stormbeam," in our example). Note that this document details a particular implementation and may need to be adjusted significantly to fit into your network. Particular IP & MAC addresses may be obfuscated below.
+
+Covered here:
+* VLAN Definition
+* DHCP Service Configuration
+* Port-Forwarding for Inbound Tor Relay Traffic
+* Firewall Rules, Inbound & Outbound
+
 # VLAN DEFINITION
 
 In my situation, EdgeRouter port eth3 is used for the underlying LAN and has several VLANs defined above it as "virtual interfaces (vif)." In this case, VLAN 30 is defined for the "Neighborhood" network, with gateway interface address 172.29.3.254. There are referneces to firewall rulesets for both inbound and outbound traffic (shown later).
