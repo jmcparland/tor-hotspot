@@ -1,4 +1,4 @@
-# VLAN DEFINITION:
+# VLAN DEFINITION
 
 In my situation, EdgeRouter port eth3 is used for the underlying LAN and has several VLANs defined above it as "virtual interfaces (vif)." In this case, VLAN 30 is defined for the "Neighborhood" network, with gateway interface address 172.29.3.254. There are referneces to firewall rulesets for both inbound and outbound traffic (shown later).
 
@@ -42,7 +42,7 @@ ubnt@ubnt# show service dhcp-server shared-network-name Neighbors
 ubnt@ubnt#                                                                                                                                             
 ```
 
-# PORT FORWARDING:
+# PORT FORWARDING
 
 As part of our operation as a public Tor Relay Node, we need to accept inbound Tor traffic for relay. The traditional port for Tor traffic is 9090. In our case, we have configured stormbeam to *advertise* using port 443 and to *accept* traffic on port 9090. This port-forwarding rule takes inbound port 443 traffic and fortwards it through the firewall to stormbeam on port 9090 for handling:
 
@@ -57,4 +57,165 @@ ubnt@ubnt# show port-forward rule 2
  protocol tcp                                                                                                                                          
 [edit]
 ubnt@ubnt#  
+```
+# Firewall Rules
+
+As a reminder, "inbound" rules apply to traffic arriving at the firewall-router _from_ the Tor VLAN, while "outbound" rules apply to traffic at the firewall-router destined to the Tor VLAN.
+
+## Inbound
+
+```
+ubnt@ubnt# show firewall name NGH_IN                                                                                                                   
+ default-action accept                                                                                                                                 
+ description "allow all internet-bound traffic"                                                                                                        
+ enable-default-log                                                                                                                                    
+ rule 10 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow related,established"                                                                                                           
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     state {                                                                                                                                           
+         established enable                                                                                                                            
+         invalid disable                                                                                                                               
+         new disable                                                                                                                                   
+         related enable                                                                                                                                
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 20 {                                                                                                                                             
+     action drop                                                                                                                                       
+     description "drop invalid"                                                                                                                        
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     state {                                                                                                                                           
+         established disable                                                                                                                           
+         invalid enable                                                                                                                                
+         new disable
+         related disable                                                                                                                               
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 30 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow stormbeam"                                                                                                                     
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     source {                                                                                                                                          
+         address 172.29.3.1                                                                                                                            
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 40 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow guest to stormbeam"                                                                                                            
+     destination {                                                                                                                                     
+         address 172.29.3.1                                                                                                                            
+     }                                                                                                                                                 
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+ }                                                                                                                                                     
+ rule 50 {                                                                                                                                             
+     action accept
+     description "allow guest wireless authentication"                                                                                                 
+     destination {                                                                                                                                     
+         address 192.168.4.7                                                                                                                           
+         port 8880                                                                                                                                     
+     }                                                                                                                                                 
+     log disable                                                                                                                                       
+     protocol tcp                                                                                                                                      
+ }                                                                                                                                                     
+ rule 60 {                                                                                                                                             
+     action reject                                                                                                                                     
+     description "reject guest to priv addrs"                                                                                                          
+     destination {                                                                                                                                     
+         group {                                                                                                                                       
+             network-group private_addrs                                                                                                               
+         }                                                                                                                                             
+     }                                                                                                                                                 
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+ }                                                                                                                                                     
+ rule 70 {                                                                                                                                             
+     action reject                                                                                                                                     
+     description "reject other guest udp"                                                                                                              
+     log disable
+     protocol udp                                                                                                                                      
+     source {                                                                                                                                          
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 80 {                                                                                                                                             
+     action reject                                                                                                                                     
+     description "reject icmp out"                                                                                                                     
+     log disable                                                                                                                                       
+     protocol icmp                                                                                                                                     
+ }                                                                                                                                                     
+[edit]
+ubnt@ubnt#                                                                                                                                             
+```
+
+## Outbound
+
+```
+ubnt@ubnt# show firewall name NGH_OUT                                                                                                                  
+ default-action drop                                                                                                                                   
+ description ""                                                                                                                                        
+ rule 10 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow related,established"                                                                                                           
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     state {                                                                                                                                           
+         established enable                                                                                                                            
+         invalid disable                                                                                                                               
+         new disable                                                                                                                                   
+         related enable                                                                                                                                
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 20 {                                                                                                                                             
+     action drop                                                                                                                                       
+     description "drop invalid"                                                                                                                        
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     state {                                                                                                                                           
+         established disable                                                                                                                           
+         invalid enable                                                                                                                                
+         new disable                                                                                                                                   
+         related disable
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 30 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow nagios"                                                                                                                        
+     log disable                                                                                                                                       
+     protocol icmp                                                                                                                                     
+     source {                                                                                                                                          
+         address 192.168.1.12                                                                                                                          
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 40 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow blastosphere wless"                                                                                                            
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     source {                                                                                                                                          
+         mac-address a8:a7:95:5f:88:c5                                                                                                                 
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 50 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow home TMP"
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     source {                                                                                                                                          
+         address 192.168.6.0/24                                                                                                                        
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+ rule 51 {                                                                                                                                             
+     action accept                                                                                                                                     
+     description "allow admin TMP"                                                                                                                     
+     log disable                                                                                                                                       
+     protocol all                                                                                                                                      
+     source {                                                                                                                                          
+         address 192.168.4.0/24                                                                                                                        
+     }                                                                                                                                                 
+ }                                                                                                                                                     
+[edit]
+ubnt@ubnt#                                                                                                                                             
 ```
