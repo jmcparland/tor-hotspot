@@ -30,6 +30,8 @@ ubnt@ubnt#
 
 DHCP services for the network are defined for the VLAN on the EdgeRouter. As a client joins the network, it is assigned an IP address in the 172.29.3.25-45 block, told to use Google (8.8.8.8) or OpenDNS (4.2.2.2) for name services, and most importantly you can see it is told to use 172.29.3.1 as a deault gateway. Just below, you can see that a particular computer named "stormbeam" is assigned this address when it comes online; this is the Raspberry Pi. [The MAC address of this particular device is obfuscated below.]
 
+NB: On review, dns-server definitions for arbitrary DHCP clients _should_ point to the Tor server (stormbeam) for handling throuh the Tor network. Verify.
+
 ```
 ubnt@ubnt# show service dhcp-server shared-network-name Neighbors                                                                                      
  authoritative disable                                                                                                                                 
