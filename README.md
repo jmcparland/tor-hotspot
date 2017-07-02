@@ -3,6 +3,8 @@ Add a Tor hotspot to an established network using Ubiquiti gear (EdgeRouter-X &a
 
 This is a high-level description of an operational network environment providing an add-on Tor hotspot service to the environment; it is not a HOWTO. The description assumes some fluency with networking fundamentals (routing, VLANs, DHCP, firewalling, etc.), fluency with linux use and configuration (a Raspberry Pi running raspian hosts the Tor service), and assumes network equipment capable of creating a separate wireless network for the service (I use inexpensive Ubiquiti gear, which I will describe). Lacking any of the above, this is a good, fairly inexpensive project to put one on the path to acquiring those items while providing an unusual service for your and your neighbors.
 
+N.B.: This document does _not_ describe using the Raspberry Pi as a wireless hotspot, which is possible. Rather, we leverage the existing wireless network infrastructure to provide the Tor hotspot service.
+
 # About Tor:
 
 Tor is a mature, cooperative, and sometimes controversial network that provides free, network-anonymized internet access for users. See the Tor Project website for additional information:
@@ -11,9 +13,9 @@ https://www.torproject.org/
 
 # Objectives
 
-(1) Add an open wireless network to an existing network that automatically routes all browsing through the public Tor network.
-(2) The wireless network should serve at least as a Tor Relay Node (a) to assist the public Tor network and (b) to obfuscate Tor network traffic originating here.
-(3) The added service should not overly impact overall network performance and should not threaten the security of the primary network.
+1. Add an open wireless network to an existing network that automatically routes all browsing through the public Tor network.
+2. The wireless network should serve at least as a Tor Relay Node (a) to assist the public Tor network and (b) to obfuscate Tor network traffic originating here.
+3. The added service should not overly impact overall network performance and should not threaten the security of the primary network.
 
 # Approach / Strategy
 
